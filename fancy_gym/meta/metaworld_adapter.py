@@ -102,7 +102,8 @@ def make_metaworld(underlying_id: str, seed: int = 1, render_mode: Optional[str]
 def register_all_ML1(**kwargs):
     for env_id in metaworld.ML1.ENV_NAMES:
         _env = metaworld.envs.ALL_V2_ENVIRONMENTS_GOAL_OBSERVABLE[env_id + "-goal-observable"](seed=0)
-        max_episode_steps = _env.max_path_length
+        # max_episode_steps = _env.max_path_length
+        max_episode_steps = 100
 
         gym_register(
             id='metaworld/'+env_id,
