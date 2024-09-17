@@ -7,6 +7,7 @@ from gymnasium import register as gym_register
 import uuid
 
 import gymnasium as gym
+from gymnasium.wrappers.time_limit import TimeLimit
 import numpy as np
 
 from fancy_gym.utils.env_compatibility import EnvCompatibility
@@ -73,6 +74,9 @@ class FixMetaworldRenderOnStep(gym.Wrapper, gym.utils.RecordConstructorArgs):
             self.env.render()
         return ret
 
+class HalfEpisodeLengthMetaworldWrapper(TimeLimit):
+    def __init__(self, env: gym.Env):
+        super().__init__(env, max_episode_steps=100)
 
 def make_metaworld(underlying_id: str, seed: int = 1, render_mode: Optional[str] = None, **kwargs):
     if underlying_id not in metaworld.ML1.ENV_NAMES:
@@ -84,6 +88,9 @@ def make_metaworld(underlying_id: str, seed: int = 1, render_mode: Optional[str]
     env._freeze_rand_vec = False
     # New argument to use global seeding
     env.seeded_rand_vec = True
+
+    # Half of the episode length
+    env = HalfEpisodeLengthMetaworldWrapper(env)
 
     env = FixMetaworldHasIncorrectObsSpaceWrapper(env)
     # env = FixMetaworldIncorrectResetPathLengthWrapper(env)
